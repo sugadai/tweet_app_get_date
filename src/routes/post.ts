@@ -4,6 +4,7 @@ import {Post} from "@/models/post";
 import {Like} from "@/models/like";
 import {ensureAuthUser} from "@/middlewares/authentication";
 import {ensureOwnerOfPost} from "@/middlewares/current_user";
+import {formatDate} from "@/lib/convert_date";
 export const postRouter = express.Router();
 
 postRouter.get("/", ensureAuthUser, async (req, res) => {
@@ -35,7 +36,7 @@ postRouter.get("/new", ensureAuthUser, (req, res) => {
 
 postRouter.get("/:postId", ensureAuthUser, async (req, res, next) => {
   const {postId} = req.params;
-  // console.log(postId);
+  console.log(postId);
   const post = await Post.find(Number(postId));
   if (!post || !post.id)
     return next(new Error("Invalid error: The post or post.id is undefined."));
@@ -52,6 +53,7 @@ postRouter.get("/:postId", ensureAuthUser, async (req, res, next) => {
   res.render("posts/show", {
     post,
     user,
+    postCreatedAt: post.createdAt ? formatDate(post.createdAt) : "",
     likeCount,
     hasLiked,
   });

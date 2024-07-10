@@ -10,6 +10,7 @@ import {Like} from "@/models/like";
 export interface PostRawData {
   content: string;
   user_id: number;
+  created_at: string;
   updated_at: string;
 }
 /* eslint-enable camelcase */
@@ -25,6 +26,7 @@ export class Post {
     return new Post(
       data.content,
       data.user_id,
+      deserializeFromSQLiteDateTimeString(data.created_at),
       deserializeFromSQLiteDateTimeString(data.updated_at)
     );
   }
@@ -38,6 +40,7 @@ export class Post {
   constructor(
     public content: string,
     public userId: number,
+    public createdAt?: Date,
     public updatedAt?: Date
   ) {}
 
@@ -127,7 +130,8 @@ export class Post {
   static async find(postId: number): Promise<Post | undefined> {
     const db = await databaseManager.getInstance();
     const postRowData = await db.get<PostRawDataWithId>(
-      "SELECT p.id, p.content, p.user_id, p.updated_at FROM posts p WHERE p.id=?",
+      // SELECT文で示されているカラムに p.created_at を追加
+      "SELECT p.id, p.content, p.user_id, p.created_at, p.updated_at FROM posts p WHERE p.id=?",
       [postId]
     );
     return postRowData && Post.fromRawDataWithId(postRowData);

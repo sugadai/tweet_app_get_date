@@ -12,12 +12,7 @@
         >
       </div>
       <p data-test="post-content"><%= post.content %></p>
-      <p class="post-time" data-test="post-time">
-        <% let date = new Date(post.updatedAt) %> <% let d1 = date.getFullYear()
-        + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' +('0' +
-        date.getDate()).slice(-2) + ' ' + ('0' + date.getHours()).slice(-2) +
-        ':' + ('0' + date.getMinutes()).slice(-2) %> <%= d1 %>
-      </p>
+      <div class="post-time" data-test="post-time"><%= postCreatedAt %></div>
       <% if(!hasLiked){ %>
       <form action="/likes/<%= post.id %>" method="POST" data-test="form-like">
         <button type="submit" data-test="submit-like" class="like-btn like">
